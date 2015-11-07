@@ -3,36 +3,59 @@
 namespace OC\PlatformBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AdvertController extends Controller
 {
-    public function indexAction()
+    public function indexAction($page)
     {
-        $url = $this->generateUrl('oc_platform_view', ['id' => 5 ]);
+        if ($page < 1) {
+            throw new NotFoundHttpException(sprintf(
+                'Page $s inexistante', $page
+            ));
+        }
 
-        return new Response(sprintf(
-            "URL de l'annonce d'id 5 : %s",
-            $url
-        ));
+        return $this->render('OCPlatformBundle:Advert:index.html.twig');
     }
 
     public function viewAction($id)
     {
-        return new Response(sprintf(
-            "Affichage de l'annonce d'id %d",
-            $id
-        ));
+        return $this->render('OCPlatformBundle:Advert:view.html.twig', [
+            'id' => $id,
+        ]);
     }
 
-    public function viewSlugAction($slug, $year, $_format)
+    public function addAction(Request $request)
     {
-        return new Response(sprintf(
-            "On pourrait afficher l'annonce correspondant au slug
-            %s créée en %s et au format %s",
-            $slug,
-            $year,
-            $_format
-        ));
+        if ($request->isMethod('POST')) {
+            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée');
+
+            return $this->redirectToRoute('oc_platform_view', [
+                'id' => 5
+            ]);
+        }
+
+        return $this->render('OCPlatformBundle:Advert:add.html.twig');
+    }
+
+    public function editAction($id, Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée');
+
+            return $this->redirectToRoute('oc_platform_view', [
+                'id' => 5
+            ]);
+        }
+
+        return $this->render('OCPlatformBundle:Advert:edit.html.twig', [
+            'id' => $id,
+        ]);
+    }
+
+    public function deleteAction($id)
+    {
+        return $this->render('OCPlatformBundle:Advert:delete.html.twig');
     }
 }

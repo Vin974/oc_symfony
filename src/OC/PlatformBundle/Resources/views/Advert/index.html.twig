@@ -1,13 +1,24 @@
-<!doctype html>
-<html>
-    <head>
-        <title>Bienvenue sur ma première page avec OpenClassrooms !</title>
-    </head>
-    <body>
-        <h1>Hello world</h1>
+{% extends "OCPlatformBundle::layout.html.twig" %}
 
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci animi asperiores, blanditiis commodi consequuntur dolore earum explicabo id illo inventore iure necessitatibus nisi ratione rerum similique soluta suscipit tenetur velit?
-        </p>
-    </body>
-</html>
+{% block title %}
+    Accueil - {{ parent() }}
+{% endblock %}
+
+{% block ocplatform_body %}
+
+    <h2>Liste des annonces</h2>
+
+    <ul>
+        {% for advert in listAdverts %}
+            <li>
+                <a href="{{ path('oc_platform_view', {id: advert.id}) }}">
+                    {{ advert.title }}
+                </a>
+                par {{ advert.author }},
+                le {{ advert.date|date('d/m/Y') }}
+            </li>
+        {% else %}
+            <li>Pas encore d'annonces</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -74,6 +74,14 @@ class AdvertController extends Controller
             ]);
         }
 
+        $antispam = $this->container->get('oc_platform.antispam');
+
+        // Je pars du principe que $text contient le texte d'un message quelconque
+        $text = '...';
+        if ($antispam->isSpam($text)) {
+            throw new \Exception('Votre message a été détecté comme spam !');
+        }
+
         return $this->render('OCPlatformBundle:Advert:add.html.twig');
     }
 
